@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сарксис</title>
+<meta name="description" content="Сарксис — мрачный автобаттлер для телефона: три колонии паразитов, боги-игроки и сетевая партия до 8 игроков. Играйте прямо в браузере.">
+<link rel="icon" href="play/index.icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;700&family=Alegreya:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+/* Раскладка: одна колонка «свитка» на тёмном камне; секции — как страницы
+   летописи Сонма, карты — овальные медальоны, как на поле в игре. */
+:root {
+  --soot: #120e0b;
+  --stone: #1c1611;
+  --bronze: #2b2018;
+  --bone: #e6d6b6;
+  --bone-dim: #a8987e;
+  --brass: #d1a35c;
+  --brass-dark: #6b4f2b;
+  --ember: #c9703d;
+  --rot: #85a861;
+  --miasma: #9e7aad;
+  --display: "Cormorant SC", "Cormorant", Georgia, "Times New Roman", serif;
+  --body: "Alegreya", Georgia, "Times New Roman", serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--soot); }
+body {
+  margin: 0;
+  background: var(--soot);
+  color: var(--bone);
+  font: 400 1.125rem/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--brass); }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; text-wrap: balance; margin: 0; letter-spacing: 0.02em; }
+p { margin: 0; }
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.eyebrow {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  color: var(--brass);
+  text-transform: uppercase;
+}
+
+/* --- Первый экран ---------------------------------------------------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: clamp(72px, 14vw, 150px) clamp(64px, 10vw, 120px);
+  border-bottom: 1px solid var(--brass-dark);
+}
+.hero__bg {
+  position: absolute; inset: 0; z-index: -2;
+  background: url("assets/bg_field.webp") center 30% / cover no-repeat;
+  filter: brightness(0.42) saturate(0.85);
+  transform: scale(1.04);
+}
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, transparent 0%, rgba(18,14,11,0.55) 60%, var(--soot) 100%),
+    linear-gradient(to bottom, transparent 60%, var(--soot));
+}
+#embers { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+.hero__inner { display: grid; gap: 22px; justify-items: center; text-align: center; }
+.hero__sigil {
+  width: 132px; aspect-ratio: 2 / 3; max-width: 100%;
+  border-radius: 50%;
+  background: url("assets/card_back.webp") center / cover;
+  box-shadow: 0 0 0 2px var(--brass-dark), 0 0 60px rgba(209,163,92,0.25);
+}
+.hero h1 {
+  font-size: clamp(3.6rem, 13vw, 7.5rem);
+  line-height: 0.9;
+  color: var(--bone);
+  text-shadow: 0 2px 0 #000, 0 0 40px rgba(201,112,61,0.35);
+}
+.hero__tag { font-size: clamp(1.15rem, 3.4vw, 1.45rem); max-width: 34ch; color: var(--bone); }
+.hero__meta { color: var(--bone-dim); font-size: 1rem; max-width: 48ch; }
+.actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 56px; padding: 0 28px;
+  font: 700 1.2rem/1 var(--display); letter-spacing: 0.06em;
+  color: var(--soot); background: var(--brass);
+  border: 1px solid #f0c98a; border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 10px 30px rgba(201,112,61,0.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 14px 40px rgba(201,112,61,0.4); }
+.btn:focus-visible { outline: 2px solid var(--bone); outline-offset: 4px; }
+.btn--ghost { background: transparent; color: var(--bone); border-color: var(--brass-dark); box-shadow: none; }
+.btn--ghost:hover { border-color: var(--brass); box-shadow: none; }
+
+/* --- Секции ------------------------------------------------------------ */
+section { padding-block: clamp(56px, 9vw, 96px); }
+section + section { border-top: 1px solid rgba(107,79,43,0.5); }
+.head { display: grid; gap: 10px; margin-bottom: 36px; max-width: 62ch; }
+.head h2 { font-size: clamp(2.1rem, 6vw, 3.2rem); line-height: 1.05; }
+.head p { color: var(--bone-dim); }
+
+/* Медальон-портрет: овал, как существо на поле. */
+.oval {
+  aspect-ratio: 3 / 4; width: 100%; max-width: 100%;
+  border-radius: 50%;
+  background: var(--stone) center / cover no-repeat;
+  box-shadow: 0 0 0 2px var(--rim, var(--brass-dark)), 0 0 0 5px var(--soot), 0 0 0 6px var(--brass-dark), 0 12px 30px rgba(0,0,0,0.6);
+}
+
+/* Мир и боги. */
+.lore { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
+.lore p { max-width: 62ch; }
+.lore em { color: var(--brass); font-style: normal; }
+.gods { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 12px; }
+.god { display: grid; gap: 14px; justify-items: center; text-align: center; }
+.god .oval { width: 170px; }
+.god h3 { font-size: 1.6rem; }
+.god p { color: var(--bone-dim); font-size: 1rem; max-width: 30ch; }
+
+/* Колонии. */
+.colonies { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.colony {
+  display: grid; gap: 14px; align-content: start;
+  padding: 24px;
+  background: linear-gradient(to bottom, var(--bronze), var(--stone));
+  border: 1px solid var(--brass-dark); border-top: 3px solid var(--race);
+  min-width: 0;
+}
+.colony__top { display: flex; gap: 16px; align-items: center; }
+.colony__top .oval { width: 84px; flex: none; --rim: var(--race); }
+.colony h3 { font-size: 1.7rem; line-height: 1.05; color: var(--race-light); }
+.colony .mech { font-family: var(--display); letter-spacing: 0.08em; color: var(--brass); font-size: 1.05rem; }
+.colony p { font-size: 1rem; color: var(--bone); }
+.colony .syn { color: var(--bone-dim); font-size: 0.95rem; border-top: 1px solid rgba(107,79,43,0.6); padding-top: 12px; }
+.infernal { --race: #c76229; --race-light: #e08a55; }
+.necro { --race: #7a9961; --race-light: #a6c08c; }
+.mutant { --race: #8f6b9e; --race-light: #b796c4; }
+
+/* Ход партии — настоящая последовательность, поэтому с номерами. */
+.steps { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.steps li { display: grid; gap: 8px; padding: 20px 20px 22px; background: var(--stone); border-left: 2px solid var(--brass-dark); min-width: 0; }
+.steps li::before {
+  counter-increment: step; content: counter(step, upper-roman);
+  font-family: var(--display); font-size: 1.9rem; color: var(--brass); line-height: 1;
+}
+.steps h3 { font-size: 1.35rem; }
+.steps p { font-size: 1rem; color: var(--bone-dim); }
+
+/* Сетевая арена. */
+.arena { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: center; }
+.arena ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.arena li { padding-left: 26px; position: relative; }
+.arena li::before { content: ""; position: absolute; left: 4px; top: 0.62em; width: 9px; height: 9px; transform: rotate(45deg); background: var(--ember); }
+.table {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+  padding: 20px; background: var(--stone); border: 1px solid var(--brass-dark);
+}
+.seat { display: grid; gap: 6px; justify-items: center; text-align: center; font-size: 0.82rem; color: var(--bone-dim); min-width: 0; }
+.seat .oval { width: 100%; max-width: 72px; }
+.seat b { font-family: var(--display); color: var(--bone); font-size: 0.95rem; font-weight: 500; overflow-wrap: anywhere; }
+.seat.out { opacity: 0.4; }
+.seat .hp { font-variant-numeric: tabular-nums; color: var(--ember); }
+
+/* Бестиарий. */
+.bestiary { display: grid; gap: 26px 18px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.card { display: grid; gap: 10px; justify-items: center; text-align: center; min-width: 0; }
+.card .portrait { position: relative; width: 100%; max-width: 150px; }
+.card .portrait .oval { --rim: var(--race, var(--brass-dark)); }
+.badge {
+  position: absolute; bottom: -4px; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  font: 700 1.05rem/1 var(--display); color: var(--bone);
+  background: var(--soot); border: 2px solid var(--brass-dark);
+  font-variant-numeric: tabular-nums;
+}
+.badge.atk { left: 2px; border-color: var(--brass); }
+.badge.hp { right: 2px; border-color: #9e2a1f; }
+.card h3 { font-size: 1.15rem; line-height: 1.1; }
+.card .tier { font-size: 0.8rem; letter-spacing: 0.14em; color: var(--race-light, var(--bone-dim)); text-transform: uppercase; font-family: var(--display); }
+.card p { font-size: 0.88rem; color: var(--bone-dim); line-height: 1.45; }
+
+/* Призыв играть внизу. */
+.final { text-align: center; display: grid; gap: 20px; justify-items: center; }
+.final h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
+footer { padding-block: 36px 48px; color: var(--bone-dim); font-size: 0.92rem; border-top: 1px solid rgba(107,79,43,0.5); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+  #embers { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <div class="wrap hero__inner">
+    <div class="hero__sigil" role="img" aria-label="Рубашка карты: глаз паразита"></div>
+    <span class="eyebrow">Партия богов</span>
+    <h1>Сарксис</h1>
+    <p class="hero__tag">Три колонии паразитов делят живой мир. Собери армию в таверне, вырасти её мутациями — и пусть она бьётся сама.</p>
+    <div class="actions">
+      <a class="btn" href="play/">Играть в браузере</a>
+      <a class="btn btn--ghost" href="#hod">Как устроена партия</a>
+    </div>
+    <p class="hero__meta">Бесплатно, на телефоне и компьютере. Обучение из трёх боёв, партия с ботами и сетевая арена до 8 игроков.</p>
+  </div>
+</header>
+
+<main>
+  <section id="mir">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Мир</span>
+        <h2>Мир, который дышит</h2>
+      </div>
+      <div class="lore">
+        <p>Горы Сарксиса — хрящи, реки — жилы, а всё живое в нём связано <em>Сонмом</em> — единым разумом, что шепчет в каждой клетке. Три колонии паразитов не враги друг другу: это три голоса одного организма. Сонмом владеют боги. Убить друг друга они не могут и потому играют. Носители — их фишки, таверна — их колода, а карты сдаёт Безликий Крупье.</p>
+        <div class="gods">
+          <div class="god">
+            <div class="oval infernal" style="background-image:url('assets/infernal_mage_2.webp');--rim:#c76229"></div>
+            <h3>Игнар Тлеющий</h3>
+            <p>Жаждет выжечь мир до пепла и вылупиться из углей.</p>
+          </div>
+          <div class="god">
+            <div class="oval necro" style="background-image:url('assets/necro_mage_2.webp');--rim:#7a9961"></div>
+            <h3>Морвейн Шепчущая</h3>
+            <p>Верит, что смерть — только начало роста.</p>
+          </div>
+          <div class="god">
+            <div class="oval mutant" style="background-image:url('assets/mutant_mother.webp');--rim:#8f6b9e"></div>
+            <h3>Верданта Мать Корней</h3>
+            <p>Хочет, чтобы всё живое пустило корни в её саду.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kolonii">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Колонии</span>
+        <h2>Три способа вырастить армию</h2>
+        <p>Существа одной колонии усиливают друг друга. У каждой колонии свой путь к огромным атаке и здоровью к концу партии.</p>
+      </div>
+      <div class="colonies">
+        <article class="colony infernal">
+          <div class="colony__top">
+            <div class="oval" style="background-image:url('assets/infernal_warrior_2.webp')"></div>
+            <h3>Адские паразиты</h3>
+          </div>
+          <span class="mech">Прививки</span>
+          <p>Огненные черви вживаются в носителя: отдают ему атаку, здоровье и свойства. Матка прививок и Владыка гнезда делают каждую следующую прививку сильнее.</p>
+          <p class="syn">Синергия: 2 существа — +2 к атаке, 4 — +3.</p>
+        </article>
+        <article class="colony necro">
+          <div class="colony__top">
+            <div class="oval" style="background-image:url('assets/necro_warrior_2.webp')"></div>
+            <h3>Некростворы</h3>
+          </div>
+          <span class="mech">Великая Грибница</span>
+          <p>Бог-гриб копит силу всю партию. Послушники и жрецы кормят его, а Носитель, Пробудитель и Сердце грибницы призывают в бой со всей накопленной мощью.</p>
+          <p class="syn">Синергия: из павших прорастают некроспоры 1/1, у четверых — 2/2 и +2 к атаке.</p>
+        </article>
+        <article class="colony mutant">
+          <div class="colony__top">
+            <div class="oval" style="background-image:url('assets/mutant_warrior_2.webp')"></div>
+            <h3>Растения-мутанты</h3>
+          </div>
+          <span class="mech">Живой сок</span>
+          <p>Сокососы и Капельники приносят капли сока: +1/+1 любому существу навсегда. Варщик и Сердце сока делают каждую каплю сильнее до конца партии.</p>
+          <p class="syn">Синергия: 2 существа — +2 к здоровью, 4 — +4.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="hod">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Ход партии</span>
+        <h2>Таверна, поле, бой</h2>
+        <p>Каждый ход повторяется один и тот же круг. Таверна растёт до шестого уровня, а с ней — и существа в ней.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Таверна</h3><p>Купи существо за 3 золота — карта уходит в руку. Обнови ассортимент, заморозь его или подними уровень таверны.</p></li>
+        <li><h3>Поле</h3><p>Выложи карты из руки на шесть клеток. Здания-рамки вокруг клеток дают существам силу, Инкубатор превращает личинку в случайное существо.</p></li>
+        <li><h3>Бой</h3><p>Армии бьются сами, слева направо. Раж, предсмертный хрип, хитиновый панцирь и шипы срабатывают по ходу боя.</p></li>
+        <li><h3>Тройка</h3><p>Три одинаковые карты в руке и на поле сливаются в закалённую со статами ×2. В награду — личинка, которую можно подсадить Крестьянину.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="arena">
+    <div class="wrap arena">
+      <div>
+        <div class="head">
+          <span class="eyebrow">Сеть</span>
+          <h2>Арена Сонма</h2>
+          <p>Сетевая партия до восьми игроков. Каждый ведёт свою таверну одновременно, а в бою встречается с армией другого игрока.</p>
+        </div>
+        <ul>
+          <li>Создай лобби и отправь друзьям код из четырёх символов.</li>
+          <li>Пустые места займут боты, а без интернета можно сыграть с ботами в одиночку.</li>
+          <li>Проигравший теряет здоровье: уровни выживших врагов плюс уровень их таверны.</li>
+          <li>Последний выживший забирает Сарксис.</li>
+        </ul>
+      </div>
+      <div class="table" aria-label="Пример стола из восьми игроков">
+        <div class="seat"><div class="oval" style="background-image:url('assets/hero_hive.webp')"></div><b>Матка улья</b><span class="hp">31</span></div>
+        <div class="seat"><div class="oval" style="background-image:url('assets/hero_pyro.webp')"></div><b>Пиромант</b><span class="hp">24</span></div>
+        <div class="seat"><div class="oval" style="background-image:url('assets/hero_herbalist.webp')"></div><b>Травница</b><span class="hp">19</span></div>
+        <div class="seat"><div class="oval" style="background-image:url('assets/infernal_priest.webp')"></div><b>Бот Тлеющий</b><span class="hp">16</span></div>
+        <div class="seat"><div class="oval" style="background-image:url('assets/necro_herald.webp')"></div><b>Бот Спорыш</b><span class="hp">12</span></div>
+        <div class="seat"><div class="oval" style="background-image:url('assets/mutant_mage_2.webp')"></div><b>Бот Лозник</b><span class="hp">7</span></div>
+        <div class="seat out"><div class="oval" style="background-image:url('assets/necro_rat.webp')"></div><b>Гнилоуст</b><span>8 место</span></div>
+        <div class="seat out"><div class="oval" style="background-image:url('assets/peasant.webp')"></div><b>Корнежор</b><span>7 место</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="bestiariy">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Бестиарий</span>
+        <h2>Кого сдаёт Крупье</h2>
+        <p>Больше семидесяти карт — существа, здания и мутагены. Вот несколько из них.</p>
+      </div>
+      <div class="bestiary" id="cards"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap final">
+      <h2>Крупье уже сдаёт</h2>
+      <p class="hero__meta">Игра запускается прямо в браузере. Первый запуск загружает около 60 МБ.</p>
+      <a class="btn" href="play/">Играть в браузере</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Сарксис — учебный проект на движке Godot.</span>
+    <span>Арт и тексты — часть игры.</span>
+  </div>
+</footer>
+
+<script>
+// Карты бестиария — настоящие данные из игры (data/units.json).
+const CARDS = [
+  ["infernal_archer_1", "Огнеплюй", 1, 2, 1, "infernal", "Огненные личинки рвутся из его горла сами — стоит лишь открыть рот."],
+  ["infernal_hound", "Пепельный пёс", 2, 4, 3, "infernal", "Пёс из пепла и углей. Даже рассыпаясь, он успевает куснуть."],
+  ["infernal_priest", "Жрец пламени", 4, 7, 7, "infernal", "Проповедует огонь. После первого удара к нему стекаются новые фанатики."],
+  ["infernal_mage_2", "Владыка жара", 4, 7, 6, "infernal", "Повелитель огненного роя. Вокруг него горит сам воздух."],
+  ["necro_rat", "Гнилая крыса", 1, 1, 2, "necro", "Грибы проросли из неё ещё при жизни. После смерти они разбегаются на собственных ножках."],
+  ["necro_archer_2", "Гнилостный снайпер", 2, 4, 4, "necro", "Стебель-ружьё, заряженное спорами. Умирая, разбрасывает весь запас."],
+  ["necro_herald", "Чумной глашатай", 4, 5, 7, "necro", "Колокол глашатая звонит по мёртвым и будит в живых ярость гнили."],
+  ["necro_mage_2", "Королева мицелия", 4, 5, 8, "necro", "Королева грибницы. Её споры отравляют сразу двоих врагов."],
+  ["mutant_vine", "Плотоядная лиана", 2, 3, 3, "mutant", "Переваривает добычу медленно и навсегда: каждый бой с убийством делает её крупнее."],
+  ["mutant_archer_2", "Колючий снайпер", 2, 4, 5, "mutant", "Цветок-бутон на спине выпускает шипы и с каждым днём раскрывается шире."],
+  ["mutant_mage_2", "Ядоцвет", 4, 6, 8, "mutant", "Гигантский ядоцвет. Его пыльца делает сильнее всех мутантов на поле."],
+  ["peasant", "Крестьянин", 1, 2, 3, "", "Подсади ему личинку — и он станет существом её колонии."],
+];
+const RACE = { infernal: "Адские", necro: "Некростворы", mutant: "Мутанты", "": "Носитель" };
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI"];
+const grid = document.getElementById("cards");
+for (const [id, name, tier, atk, hp, race, lore] of CARDS) {
+  const el = document.createElement("article");
+  el.className = "card " + race;
+  el.innerHTML = `
+    <div class="portrait">
+      <div class="oval" style="background-image:url('assets/${id}.webp')" role="img" aria-label="${name}"></div>
+      <span class="badge atk" title="Атака">${atk}</span>
+      <span class="badge hp" title="Здоровье">${hp}</span>
+    </div>
+    <span class="tier">${RACE[race]} · уровень ${ROMAN[tier]}</span>
+    <h3>${name}</h3>
+    <p>${lore}</p>`;
+  grid.appendChild(el);
+}
+
+// Угли над полем: медленно поднимаются и гаснут.
+(() => {
+  const canvas = document.getElementById("embers");
+  if (!canvas || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const ctx = canvas.getContext("2d");
+  let w = 0, h = 0, sparks = [];
+  const resize = () => {
+    const r = canvas.getBoundingClientRect();
+    w = canvas.width = Math.round(r.width * devicePixelRatio);
+    h = canvas.height = Math.round(r.height * devicePixelRatio);
+  };
+  const spawn = () => ({
+    x: Math.random() * w, y: h + Math.random() * h * 0.3,
+    r: (0.6 + Math.random() * 1.8) * devicePixelRatio,
+    vy: (0.25 + Math.random() * 0.7) * devicePixelRatio,
+    sway: Math.random() * Math.PI * 2, life: 0, max: 380 + Math.random() * 400,
+    hue: Math.random() < 0.75 ? [222, 120, 60] : [150, 180, 110],
+  });
+  resize();
+  addEventListener("resize", resize);
+  for (let i = 0; i < 60; i++) { const s = spawn(); s.y = Math.random() * h; sparks.push(s); }
+  const tick = () => {
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+    for (const s of sparks) {
+      s.life++; s.y -= s.vy; s.sway += 0.02; s.x += Math.sin(s.sway) * 0.4 * devicePixelRatio;
+      const a = Math.max(0, Math.sin(Math.PI * s.life / s.max)) * 0.8;
+      const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4);
+      g.addColorStop(0, `rgba(${s.hue[0]},${s.hue[1]},${s.hue[2]},${a})`);
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2); ctx.fill();
+      if (s.life > s.max || s.y < -20) Object.assign(s, spawn());
+    }
+    requestAnimationFrame(tick);
+  };
+  tick();
+})();
+</script>
+</body>
+</html>
