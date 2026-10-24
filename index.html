@@ -3,8 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Сарксис</title>
-<meta name="description" content="Сарксис — мрачный автобаттлер для телефона: три колонии паразитов, боги-игроки и сетевая партия до 8 игроков. Играйте прямо в браузере.">
+<title>Сарксис — бесплатная карточная онлайн-игра</title>
+<meta name="description" content="Сарксис — бесплатная карточная онлайн-игра-автобаттлер: собирай армию паразитов из карт и сражайся с друзьями, до 8 игроков. Играй бесплатно в браузере на телефоне и компьютере, без установки и регистрации.">
+<meta property="og:title" content="Сарксис — бесплатная карточная онлайн-игра">
+<meta property="og:description" content="Карточный автобаттлер в браузере: три колонии паразитов, 70+ карт, онлайн-партии до 8 игроков. Бесплатно.">
+<meta property="og:image" content="https://dranichme.github.io/sarkis/assets/bg_field.webp">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame","name":"Сарксис","url":"https://dranichme.github.io/sarkis/",
+ "description":"Бесплатная карточная онлайн-игра-автобаттлер в браузере.","genre":["Карточная игра","Автобаттлер"],
+ "gamePlatform":["Web browser","Android","iOS"],"playMode":["SinglePlayer","MultiPlayer"],"numberOfPlayers":{"@type":"QuantitativeValue","minValue":1,"maxValue":8},
+ "inLanguage":"ru","offers":{"@type":"Offer","price":"0","priceCurrency":"RUB"}}
+</script>
 <link rel="icon" href="play/index.icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,6 +101,21 @@ p { margin: 0; }
 }
 .hero__tag { font-size: clamp(1.15rem, 3.4vw, 1.45rem); max-width: 34ch; color: var(--bone); }
 .hero__meta { color: var(--bone-dim); font-size: 1rem; max-width: 48ch; }
+/* Плашки «бесплатно · карточная · онлайн» — главное, что нужно понять за секунду. */
+.facts { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; list-style: none; margin: 0; padding: 0; }
+.facts li {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px; border: 1px solid var(--brass-dark); border-radius: 999px;
+  background: rgba(18,14,11,0.7);
+  font: 700 1rem/1.2 var(--display); letter-spacing: 0.08em; color: var(--bone);
+}
+.facts li::before { content: ""; width: 8px; height: 8px; transform: rotate(45deg); background: var(--ember); flex: none; }
+.facts li.free { color: var(--soot); background: var(--brass); border-color: #f0c98a; }
+.facts li.free::before { background: var(--soot); }
+.free-band { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.free-band div { padding: 20px; background: var(--stone); border-top: 2px solid var(--brass); min-width: 0; }
+.free-band b { display: block; font: 700 1.5rem/1.1 var(--display); color: var(--brass); margin-bottom: 6px; }
+.free-band p { color: var(--bone-dim); font-size: 1rem; }
 .actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -212,18 +238,38 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: 
   <canvas id="embers" aria-hidden="true"></canvas>
   <div class="wrap hero__inner">
     <div class="hero__sigil" role="img" aria-label="Рубашка карты: глаз паразита"></div>
-    <span class="eyebrow">Партия богов</span>
+    <span class="eyebrow">Бесплатная карточная онлайн-игра</span>
     <h1>Сарксис</h1>
-    <p class="hero__tag">Три колонии паразитов делят живой мир. Собери армию в таверне, вырасти её мутациями — и пусть она бьётся сама.</p>
+    <p class="hero__tag">Карточный автобаттлер в браузере. Собери армию паразитов из карт таверны, вырасти её мутациями — и сразись онлайн с друзьями.</p>
+    <ul class="facts" aria-label="Коротко об игре">
+      <li class="free">Бесплатно</li>
+      <li>Карточная</li>
+      <li>Онлайн до 8 игроков</li>
+    </ul>
     <div class="actions">
-      <a class="btn" href="play/">Играть в браузере</a>
+      <a class="btn" href="play/">Играть бесплатно</a>
       <a class="btn btn--ghost" href="#hod">Как устроена партия</a>
     </div>
-    <p class="hero__meta">Бесплатно, на телефоне и компьютере. Обучение из трёх боёв, партия с ботами и сетевая арена до 8 игроков.</p>
+    <p class="hero__meta">Без установки и регистрации — открой в браузере на телефоне или компьютере. Обучение из трёх боёв, партия с ботами и онлайн-арена.</p>
   </div>
 </header>
 
 <main>
+  <section id="besplatno">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Играть бесплатно</span>
+        <h2>Карточная игра, в которую можно сыграть прямо сейчас</h2>
+      </div>
+      <div class="free-band">
+        <div><b>Бесплатно</b><p>Вся игра открыта сразу: все колонии, все карты, все режимы. Ничего не нужно покупать.</p></div>
+        <div><b>Онлайн</b><p>Создай лобби, отправь друзьям код — и до восьми игроков в одной партии. Пустые места займут боты.</p></div>
+        <div><b>В браузере</b><p>Не нужно ничего скачивать: игра работает на телефоне и компьютере по одной ссылке.</p></div>
+        <div><b>Карточная</b><p>Больше семидесяти карт: существа, здания и мутагены. Каждая партия собирается заново.</p></div>
+      </div>
+    </div>
+  </section>
+
   <section id="mir">
     <div class="wrap">
       <div class="head">
@@ -314,7 +360,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: 
         <div class="head">
           <span class="eyebrow">Сеть</span>
           <h2>Арена Сонма</h2>
-          <p>Сетевая партия до восьми игроков. Каждый ведёт свою таверну одновременно, а в бою встречается с армией другого игрока.</p>
+          <p>Бесплатная онлайн-партия до восьми игроков. Каждый ведёт свою таверну одновременно, а в бою встречается с армией другого игрока.</p>
         </div>
         <ul>
           <li>Создай лобби и отправь друзьям код из четырёх символов.</li>
@@ -350,15 +396,15 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: 
   <section>
     <div class="wrap final">
       <h2>Крупье уже сдаёт</h2>
-      <p class="hero__meta">Игра запускается прямо в браузере. Первый запуск загружает около 60 МБ.</p>
-      <a class="btn" href="play/">Играть в браузере</a>
+      <p class="hero__meta">Бесплатная карточная онлайн-игра — запускается прямо в браузере. Первый запуск загружает около 60 МБ.</p>
+      <a class="btn" href="play/">Играть бесплатно</a>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Сарксис — учебный проект на движке Godot.</span>
+    <span>Сарксис — бесплатная карточная онлайн-игра на движке Godot.</span>
     <span>Арт и тексты — часть игры.</span>
   </div>
 </footer>
